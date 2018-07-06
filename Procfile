@@ -1,1 +1,1 @@
-web: node poi.js
+worker: npm run
