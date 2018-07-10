@@ -20,6 +20,7 @@
   "homepage": "https://github.com/garyuu/RollCallerPoi#readme",
   "dependencies": {
     "discord.js": "^11.3.2",
-    "dotenv": "^6.0.0"
+    "dotenv": "^6.0.0",
+    "pg": "^7.4.3"
   }
 }

@@ -1,0 +1,9 @@
+{
+    "system": {
+        "ready": "我準備好了 Poi!"
+    },
+    "response": {
+        "hello": "你好! Poi!",
+        "default": "Poi!!"
+    }
+}
