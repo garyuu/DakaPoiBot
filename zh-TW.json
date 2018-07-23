@@ -3,7 +3,10 @@
         "ready": "我準備好了 Poi!"
     },
     "response": {
-        "hello": "你好! Poi!",
-        "default": "Poi!!"
+        "hello": "%s 你好! Poi!",
+        "default": "Poi!!",
+        "dberror": "和資料庫的連線失敗了 poi...",
+        "successfulJoin": "%s 成功加入了 %s poi!",
+        "successfulLeave": "%s 離開了 %s poi。"
     }
 }

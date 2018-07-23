@@ -19,21 +19,33 @@ client.on("message", (message) => {
             case 'hi':
             case '你好':
             case '妳好':
-                message.channel.send('<@' + message.author.id + '> ' + lang.response.hello);
+                message.channel.send(util.format(lang.response.hello + '<@' + message.author.id + '> '));
                 break;
             case 'join':
             case '加入':
-                db.exec_register_user_to_channel(message.channel.id, message.member.displayName, (isError) => {
+                db.exec_register_user_to_channel(message.channel.id, message.author.id, (isError) => {
                     if (isError) {
                         message.channel.send(lang.response.dberror);
                     }
                     else {
-                        message.channel.send(util.format(lang.response.successfulJoin, " @" + message.member.displayName));
+                        const channelName = message.channel.name;
+                        const userNameTag = message.author.toString();
+                        message.channel.send(util.format(lang.response.successfulJoin, userNameTag, channelName));
                     }
                 });
                 break;
             case 'leave':
             case '離開':
+                db.exec_unregister_user_from_channel(message.channel.id, message.author.id, (isError) => {
+                    if (isError) {
+                        message.channel.send(lang.response.dberror);
+                    }
+                    else {
+                        const channelName = message.channel.name;
+                        const userNameTag = message.author.toString();
+                        message.channel.send(util.format(lang.response.successfulLeave, userNameTag, channelName));
+                    }
+                });
                 break;
             default:
                 message.channel.send(lang.response.default);
