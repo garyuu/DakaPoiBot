@@ -36,18 +36,18 @@ class DBAccess {
     }
 
     exec_register_user_to_channel(channel, user, callback) {
-        let sql = "INSERT INTO `channels` (name) \
-                   WHERE NOT EXIST(SELECT * FROM `channels` WHERE `name` = '%s'); \
-                   INSERT INTO `registers`(`channel_name`, `user_name`) \
+        let sql = "INSERT INTO channels (name) \
+                   WHERE NOT EXIST(SELECT * FROM channels WHERE name = '%s'); \
+                   INSERT INTO registers(channel_name, user_name) \
                    VALUES ('%s', '%s')\
-                   WHERE NOT EXIST(SELECT * FROM `registers` WHERE `channel_name` = '%s' AND `user_name` = '%s' );";
+                   WHERE NOT EXIST(SELECT * FROM registers WHERE channel_name = '%s' AND user_name = '%s' );";
         sql = util.format(sql, channel, channel, user, channel, user);
         this.query(sql, callback);
     }
 
     exec_unregister_user_from_channel(channel, user, callback) {
-        let sql = "DELETE FROM `registers` \
-                   WHERE `channel_name` = '%s' && `user_name` = '%s';";
+        let sql = "DELETE FROM registers \
+                   WHERE channel_name = '%s' && user_name = '%s';";
         sql = util.format(sql, channel, user);
         this.query(sql, callback);
     }
