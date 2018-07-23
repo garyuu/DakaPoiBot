@@ -37,11 +37,12 @@ class DBAccess {
 
     exec_register_user_to_channel(channel, user, callback) {
         let sql = "INSERT INTO channels (name) \
+                   VALUES (%s) \
                    WHERE NOT EXIST(SELECT * FROM channels WHERE name = '%s'); \
                    INSERT INTO registers(channel_name, user_name) \
-                   VALUES ('%s', '%s')\
+                   VALUES ('%s', '%s') \
                    WHERE NOT EXIST(SELECT * FROM registers WHERE channel_name = '%s' AND user_name = '%s' );";
-        sql = util.format(sql, channel, channel, user, channel, user);
+        sql = util.format(sql, channel, channel, channel, user, channel, user);
         this.query(sql, callback);
     }
 
