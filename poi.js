@@ -19,7 +19,7 @@ client.on("message", (message) => {
             case 'hi':
             case '你好':
             case '妳好':
-                message.channel.send(util.format(lang.response.hello + '<@' + message.author.id + '> '));
+                message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
                 break;
             case 'join':
             case '加入':
