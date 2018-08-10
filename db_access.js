@@ -1,76 +1,152 @@
-require('dotenv').config()
 const util = require('util');
-const { Client } = require('pg');
-const client = new Client ({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-});
+const { Pool } = require('pg');
+let pool = new Pool({});
 
 class DBAccess {
-    constructor(client) {
-        //this.client = client;
+    constructor() {
+        this.offline = false;
+    } 
+
+    set_url(url) {
+        pool = new Pool({
+            connectionString: url,
+            ssl: true
+        });
     }
 
-    query(sql, callback, withResponse = false) {
-        let isError = false;
-        let data = null;
-        client.connect();
-        
-        client.query(sql)
-            .then((result) => {
-                isError = false;
-                if (withResponse)
-                    data = result;
-            })
-            .catch((e) => {
-                console.error("Connection to database error. ", e.stack);
-                isError = true;
-            })
-            .then(() => {
-                client.end();
-                if (withResponse)
-                    callback(isError, data);
-                else
-                    callback(isError);
-            });
+    set_offline(enable) {
+        this.offline = enable;
     }
 
-    exec_register_user_to_channel(channel, user, callback) {
-        let sql = "INSERT INTO channels (name) \
-                   VALUES (%s) \
-                   WHERE NOT EXIST(SELECT * FROM channels WHERE name = '%s'); \
-                   INSERT INTO registers(channel_name, user_name) \
-                   VALUES ('%s', '%s') \
-                   WHERE NOT EXIST(SELECT * FROM registers WHERE channel_name = '%s' AND user_name = '%s' );";
-        sql = util.format(sql, channel, channel, channel, user, channel, user);
-        this.query(sql, callback);
+    async query(sql) {
+        if (this.offline) 
+            return Promise.resolve(sql);
+
+        return new Promise((resolve, reject) => {
+            let data = null;
+
+            try {
+                pool.connect((err, client, release) => {
+                    if (err)
+                        throw Error(err.stack);
+                    client.query(sql)
+                        .then((result) => {
+                            data = result;
+                            resolve(data);
+                        })
+                        .catch((e) => {
+                            console.error("Connection to database error. ", e.stack);
+                            reject(e);
+                        })
+                        .then(() => {
+                            release();
+                        });
+                });
+            }
+            catch (e) {
+                console.log(e);
+                reject(e);
+            }
+        });
     }
 
-    exec_unregister_user_from_channel(channel, user, callback) {
+    register_id_sql(guild, role) {
+        let sql = "SELECT id \
+                   FROM registers \
+                   WHERE guild_id = '%s' AND role_id = '%s'";
+        sql = util.format(sql, guild, role);
+        return sql;
+    }
+
+    exec_add_role(guild, role) {
+        let sql = "INSERT INTO registers (guild_id, role_id) \
+                   SELECT '%s', '%s' \
+                   WHERE NOT EXISTS (%s);";
+        sql = util.format(sql, guild, role, this.register_id_sql(guild, role));
+        return this.query(sql);
+    }
+
+    exec_remove_role(guild, role) {
         let sql = "DELETE FROM registers \
-                   WHERE channel_name = '%s' && user_name = '%s';";
-        sql = util.format(sql, channel, user);
-        this.query(sql, callback);
+                   WHERE guild_id = '%s' AND role_id = '%s';";
+        sql = util.format(sql, guild, role);
+        return this.query(sql);
     }
 
-    get_today(channel, callback) {
-        let sql = "SELECT `current`, `update_time` \
-                   FROM `channels` \
-                   WHERE `name` = '%s'";
-        sql = util.format(sql, channel);
-        this.query(sql, (isError, data) => {
-            if (isError) callback(isError, null);
-
-        }, true);
+    exec_update_current(guild, role, index) {
+        let sql = "UPDATE registers \
+                   SET current = %d \
+                   WHERE guild_id = '%s' AND role_id = '%s';";
+        sql = util.format(sql, index, guild, role);
+        return this.query(sql);
     }
 
-    get_list(channel, callback) {
-        let sql = "SELECT `user_name`, `index` \
-                   FROM `registers` \
-                   WHERE `channel_name` = '%s' \
-                   ORDER BY `index` ASC";
-        this.query(sql, callback, true);
+    exec_add_member(guild, role, member, index) {
+        let sql = "INSERT INTO members(r_id, member_id, index) \
+                   VALUES ((%s), '%s', %d);";
+        sql = util.format(sql, this.register_id_sql(guild, role), member, index);
+        return this.query(sql);
+    }
+
+    exec_remove_member(guild, role, member) {
+        let sql = "DELETE FROM members \
+                   WHERE r_id = (%s) AND member_id = '%s';";
+        sql = util.format(sql, this.register_id_sql(guild, role), member);
+        return this.query(sql);
+    }
+
+    exec_update_member(guild, role, member, index) {
+        let sql = "UPDATE members \
+                   SET index = %d \
+                   WHERE r_id = (%s) AND member_id = '%s';";
+        sql = util.format(sql, index, this.register_id_sql(guild, role), member);
+        return this.query(sql);
+    }
+
+    get_current(guild, role) {
+        let sql = "SELECT M.member_id \
+                   FROM registers R, members M \
+                   WHERE R.guild_id = '%s' AND R.role_id = '%s' AND \
+                         R.id = M.r_id AND R.current = M.index;";
+        sql = util.format(sql, guild, role);
+        return this.query(sql);
+    }
+
+    get_list(guild, role) {
+        let sql = "SELECT member_id \
+                   FROM members \
+                   WHERE r_id = (%s) \
+                   ORDER BY index ASC;";
+        sql = util.format(sql, this.register_id_sql(guild, role));
+        return this.query(sql);
+    }
+
+    get_max_index(guild, role) {
+        let sql = "SELECT member_id, index  \
+                   FROM members \
+                   WHERE (r_id, index) IN ( \
+                       SELECT r_id, MAX(index) \
+                       FROM members \
+                       WHERE r_id = (%s) \
+                       GROUP BY r_id \
+                   );";
+        sql = util.format(sql, this.register_id_sql(guild, role));
+        return this.query(sql);
+    }
+    
+    get_min_index_of_current(guild, role) {
+        let sql = "SELECT member_id, index \
+                   FROM members \
+                   WHERE (r_id, index) IN ( \
+                       SELECT M.r_id, MIN(M.index) AS index \
+                       FROM registers R, members M \
+                       WHERE R.guild_id = '%s' AND R.role_id = '%s' AND \
+                             R.id = M.r_id AND M.index > R.current \
+                       GROUP BY M.r_id \
+                   );";
+        sql = util.format(sql, guild, role);
+        return this.query(sql);
     }
 }
 
-module.exports = new DBAccess(client);
+module.exports = new DBAccess();

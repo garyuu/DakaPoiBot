@@ -1,0 +1,3 @@
+DROP TRIGGER IF EXISTS update_time_refresh ON registers CASCADE;
+DROP TABLE IF EXISTS registers CASCADE;
+DROP TABLE IF EXISTS members CASCADE;
