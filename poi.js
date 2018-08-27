@@ -20,7 +20,10 @@ client.on("message", (message) => {
             case 'hi':
             case '你好':
             case '妳好':
-                message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
+                if (message.author.username == "Garyuu")
+                    message.channel.send(util.format(lang.response.helloonichan, '<@' + message.author.id + '> '));
+                else
+                    message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
                 break;
                 /*
             case 'add':
@@ -42,6 +45,15 @@ client.on("message", (message) => {
                 caller.shuffle(db, lang, message);
                 break;
                 */
+            case '我愛你':
+            case '我愛妳':
+            case '愛你':
+            case '愛妳':
+                if (message.author.username == "Garyuu")
+                    message.channel.send(lang.response.loveonichan);
+                else
+                    message.channel.send(lang.response.nooneloveyou);
+                break;
             default:
                 message.channel.send(lang.response.default);
         }

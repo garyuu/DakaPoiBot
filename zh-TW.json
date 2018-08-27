@@ -4,11 +4,14 @@
     },
     "response": {
         "hello": "%s 你好! Poi!",
+        "helloonichan": "是 %s 歐尼醬poi!!",
         "default": "Poi!!",
         "dberror": "和資料庫的連線失敗了 poi...",
         "successfulJoin": "%s 成功加入了 %s poi!",
         "successfulLeave": "%s 離開了 %s poi。",
         "yuck": "噁心poi",
-        "mayingjo": "還我:cow:poi!!"
+        "mayingjo": "還我:cow:poi!!",
+        "loveonichan": "最愛歐尼醬了:heart:poi!!",
+        "nooneloveyou": "可惜沒有人愛你poi..."
     }
 }
