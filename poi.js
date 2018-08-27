@@ -12,6 +12,8 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
+    if (message.author.bot)
+        return;
     if (message.content.startsWith(prefix)) {
         const args = message.content.slice(prefix.length).split(' ');
         const command = args.shift().toLowerCase();
@@ -58,7 +60,7 @@ client.on("message", (message) => {
                 message.channel.send(lang.response.default);
         }
     }
-    else if (!message.author.bot && (message.content.search("噁心") != -1 || message.content.toLowerCase() == ("ot"))) {
+    else if (message.content.search("噁心") != -1 || message.content.toLowerCase() == ("ot")) {
         message.channel.send(lang.response.yuck);
     }
     else if (message.content.search("馬英九") != -1) {
