@@ -4,7 +4,8 @@ const discord = require('discord.js');
 const client = new discord.Client();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
-const db = require('./db_access.js');
+const db = new require('./db_access.js')(process.env.DATABASE_URL);
+const caller = require('./rollcaller.js');
 
 client.on("ready", () => {
     console.log(lang.system.ready);
@@ -21,31 +22,23 @@ client.on("message", (message) => {
             case '妳好':
                 message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
                 break;
-            case 'join':
-            case '加入':
-                db.exec_register_user_to_channel(message.channel.id, message.author.id, (isError) => {
-                    if (isError) {
-                        message.channel.send(lang.response.dberror);
-                    }
-                    else {
-                        const channelName = message.channel.name;
-                        const userNameTag = message.author.toString();
-                        message.channel.send(util.format(lang.response.successfulJoin, userNameTag, channelName));
-                    }
-                });
+            case 'add':
+                caller.add(db, lang, message);
                 break;
-            case 'leave':
-            case '離開':
-                db.exec_unregister_user_from_channel(message.channel.id, message.author.id, (isError) => {
-                    if (isError) {
-                        message.channel.send(lang.response.dberror);
-                    }
-                    else {
-                        const channelName = message.channel.name;
-                        const userNameTag = message.author.toString();
-                        message.channel.send(util.format(lang.response.successfulLeave, userNameTag, channelName));
-                    }
-                });
+            case 'remove':
+                caller.remove(db, lang, message);
+                break;
+            case 'refresh':
+                caller.refresh(db, lang, message);
+                break;
+            case 'today':
+                caller.today(db, lang, message);
+                break;
+            case 'next':
+                caller.next(db, lang, message);
+                break;
+            case 'shuffle':
+                caller.shuffle(db, lang, message);
                 break;
             default:
                 message.channel.send(lang.response.default);

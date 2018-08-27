@@ -1,5 +1,5 @@
 require('dotenv').config();
-const DBA = require('../db_access.js');
+const DBA = new (require('../db_access.js'))(process.env.TEST_DATABASE_URL);
 const colors = require('colors/safe');
 const fs = require('fs');
 
@@ -43,6 +43,12 @@ class TestDBAccess {
         console.log(colors.black(colors.bgWhite("exec_update_member:")));
         this.print_sql(await DBA.exec_update_member(this.guild, this.role, this.member, 0));
 
+        console.log(colors.black(colors.bgWhite("get_role:")));
+        this.print_sql(await DBA.get_role(this.guild, this.role));
+
+        console.log(colors.black(colors.bgWhite("get_role_list:")));
+        this.print_sql(await DBA.get_role_list());
+
         console.log(colors.black(colors.bgWhite("get_current:")));
         this.print_sql(await DBA.get_current(this.guild, this.role));
 
@@ -59,7 +65,6 @@ class TestDBAccess {
     async online(url) {
         console.log(colors.blue("== Online Test == "));
         console.log("DB_URL: " + colors.cyan(url));
-        DBA.set_url(url);
         DBA.set_offline(false);
         await this.online_test();
     }
@@ -77,6 +82,13 @@ class TestDBAccess {
             if (data.rowCount != 1 || data.rows[0].guild_id != 'Guild1' || data.rows[0].role_id != 'Role1') {
                 console.log(data.rows);
                 throw Error(colors.red("Add role failed!"));
+            }
+
+            console.log("Testing get role...");
+            data = await DBA.get_role('Guild1', 'Role1');
+            if (data.rowCount != 1) {
+                console.log(data.rows);
+                throw Error(colors.red("Get role failed!"));
             }
             
             console.log("Testing remove role...");
@@ -142,6 +154,13 @@ class TestDBAccess {
             if (data.rowCount != 1 || data.rows[0].member_id != 'Member4') {
                 console.log(data.rows);
                 throw Error(colors.red("Get current failed!"));
+            }
+
+            console.log("Testing get role list...");
+            data = await DBA.get_role_list();
+            if (data.rowCount != 1 || data.rows[0].guild_id != 'Guild2' || data.rows[0].role_id != 'Role2' || data.rows[0].member_id != 'Member4') {
+                console.log(data.rows);
+                throw Error(colors.red("Get role list failed!"));
             }
             
             console.log("Testing update member...");

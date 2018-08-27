@@ -3,16 +3,13 @@ const { Pool } = require('pg');
 let pool = new Pool({});
 
 class DBAccess {
-    constructor() {
+    constructor(url) {
         this.offline = false;
-    } 
-
-    set_url(url) {
         pool = new Pool({
             connectionString: url,
             ssl: true
         });
-    }
+    } 
 
     set_offline(enable) {
         this.offline = enable;
@@ -103,6 +100,17 @@ class DBAccess {
         return this.query(sql);
     }
 
+    get_role(guild, role) {
+        return this.query(this.register_id_sql(guild, role) + ";");
+    }
+
+    get_role_list() {
+        let sql = "SELECT R.guild_id, R.role_id, M.member_id \
+                   FROM registers R, members M \
+                   WHERE R.id = M.r_id AND R.current = M.index";
+        return this.query(sql);
+    }
+
     get_current(guild, role) {
         let sql = "SELECT M.member_id \
                    FROM registers R, members M \
@@ -149,4 +157,4 @@ class DBAccess {
     }
 }
 
-module.exports = new DBAccess();
+module.exports = DBAccess;
