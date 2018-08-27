@@ -4,8 +4,8 @@ const discord = require('discord.js');
 const client = new discord.Client();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
-const db = new require('./db_access.js')(process.env.DATABASE_URL);
-const caller = require('./rollcaller.js');
+//const db = new require('./db_access.js')(process.env.DATABASE_URL);
+//const caller = require('./rollcaller.js');
 
 client.on("ready", () => {
     console.log(lang.system.ready);
@@ -22,6 +22,7 @@ client.on("message", (message) => {
             case '妳好':
                 message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
                 break;
+                /*
             case 'add':
                 caller.add(db, lang, message);
                 break;
@@ -40,9 +41,16 @@ client.on("message", (message) => {
             case 'shuffle':
                 caller.shuffle(db, lang, message);
                 break;
+                */
             default:
                 message.channel.send(lang.response.default);
         }
+    }
+    else if (message.content.search("噁心") != -1 || message.content.toLowerCase() == ("ot")) {
+        message.channel.send(lang.response.yuck);
+    }
+    else if (message.content.search("馬英九") != -1) {
+        message.channel.send(lang.response.mayingjo);
     }
 });
 
