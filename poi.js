@@ -68,17 +68,20 @@ client.on("message", (message) => {
             case 'playlist':
             case '歌單':
             case '播放清單':
-                if (command.length == 0) {
+                if (args.length == 0) {
                     db.getPlaylist(message.author.id)
                         .then((result) => {
-                            message.channel.send(util.format(lang.response.getPlaylist, result.rows[0].url));
+                            if (result.rows.length == 0)
+                                message.channel.send(lang.response.noplaylist);
+                            else
+                                message.channel.send(util.format(lang.response.getPlaylist, result.rows[0].url));
                         })
                         .catch((e) => {
                             message.channel.send(lang.response.dberror);
                         });
                 }
                 else {
-                    const url = command.shift();
+                    const url = args.shift();
                     if (urlRegex({exact: true, strict: true}).test(url)) {
                         db.setPlaylist(message.author.id, url)
                             .then((result) => {
