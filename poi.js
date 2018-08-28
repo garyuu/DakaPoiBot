@@ -4,7 +4,8 @@ const discord = require('discord.js');
 const client = new discord.Client();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
-//const db = new require('./db_access.js')(process.env.DATABASE_URL);
+const urlRegex = require('url-regex');
+const db = new require('./db_access.js')(process.env.DATABASE_URL);
 //const caller = require('./rollcaller.js');
 
 client.on("ready", () => {
@@ -15,9 +16,10 @@ client.on("message", (message) => {
     if (message.author.bot)
         return;
     if (message.content.startsWith(prefix)) {
-        const args = message.content.slice(prefix.length).split(' ');
+        const args = message.content.slice(prefix.length).trim().replace(/\s+/g, ' ').split(' ');
         const command = args.shift().toLowerCase();
         switch (command) {
+            /* Hello {{{ */
             case 'hello':
             case 'hi':
             case '你好':
@@ -27,7 +29,9 @@ client.on("message", (message) => {
                 else
                     message.channel.send(util.format(lang.response.hello, '<@' + message.author.id + '> '));
                 break;
-                /*
+            /* }}} */
+
+            /* RollCaller {{{ *
             case 'add':
                 caller.add(db, lang, message);
                 break;
@@ -46,7 +50,9 @@ client.on("message", (message) => {
             case 'shuffle':
                 caller.shuffle(db, lang, message);
                 break;
-                */
+            /* }}} */
+
+            /* Love {{{ */
             case '我愛你':
             case '我愛妳':
             case '愛你':
@@ -56,14 +62,47 @@ client.on("message", (message) => {
                 else
                     message.channel.send(lang.response.nooneloveyou);
                 break;
+            /* }}} */
+
+            /* Playlist {{{ */
+            case 'playlist':
+            case '歌單':
+            case '播放清單':
+                if (command.length == 0) {
+                    db.getPlaylist(message.author.id)
+                        .then((result) => {
+                            message.channel.send(util.format(lang.response.getPlaylist, result.rows[0].url));
+                        })
+                        .catch(e) => {
+                            message.channel.send(lang.response.dberror);
+                        });
+                }
+                else {
+                    const url = command.shift();
+                    if (urlRegex({exact: true, strict: true}).test(url)) {
+                        db.setPlaylist(message.author.id, url)
+                            .then((result) => {
+                                message.channel.send(lang.response.setPlaylist);
+                            })
+                            .catch(e) => {
+                                message.channel.send(lang.response.dberror);
+                            });
+                    }
+                    else {
+                        message.channel.send(lang.response.urlerror)
+                    }
+                }
+                break;
+            /* }}} */
+
             default:
                 message.channel.send(lang.response.default);
         }
     }
-    else if (message.content.search("噁心") != -1 || message.content.toLowerCase() == ("ot")) {
+    else if (message.content.includes("噁心") || message.content.toLowerCase() == ("ot")) {
         message.channel.send(lang.response.yuck);
     }
-    else if (message.content.search("馬英九") != -1) {
+    else if (message.content.includes("馬英九")) {
         message.channel.send(lang.response.mayingjo);
     }
 });

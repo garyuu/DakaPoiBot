@@ -15,7 +15,7 @@ class DBAccess {
         this.offline = enable;
     }
 
-    async query(sql) {
+    async query(sql) { //{{{
         if (this.offline) 
             return Promise.resolve(sql);
 
@@ -45,8 +45,9 @@ class DBAccess {
                 reject(e);
             }
         });
-    }
+    }//}}}
 
+    /* RollCaller {{{ */
     register_id_sql(guild, role) {
         let sql = "SELECT id \
                    FROM registers \
@@ -155,6 +156,33 @@ class DBAccess {
         sql = util.format(sql, guild, role);
         return this.query(sql);
     }
+    /* }}} */
+
+    /* Playlist */
+    setPlaylist(user, url) {
+        let sql;
+        if (this.getPlaylist(user).rows.length == 0) {
+            sql = "INSERT INTO playlists(user_id, url) \
+                   VALUES('%s', '%s')";
+            sql = util.format(sql, user, url);
+        }
+        else {
+            sql = "UPDATE playlists \
+                   SET url = '%s' \
+                   WHERE user_id = '%s'";
+            sql = util.format(sql, url, user);
+        }
+        return this.query(sql);
+    }
+
+    getPlaylist(user) {
+        let sql = "SELECT url \
+                   FROM playlists \
+                   WHERE user_id = '%s'";
+        sql = util.format(sql, user);
+        return this.query(sql);
+    }
+    /* }}} */
 }
 
 module.exports = DBAccess;

@@ -11,6 +11,10 @@ CREATE TABLE members (
     member_id TEXT NOT NULL,
     index INT NOT NULL
 );
+CREATE TABLE playlists (
+    user_id TEXT PRIMARY KEY,
+    url TEXT NOT NULL
+);
 
 /* Refresh time stamp when update */
 CREATE OR REPLACE FUNCTION update_time_refresh()
