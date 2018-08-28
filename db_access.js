@@ -161,6 +161,7 @@ class DBAccess {
     /* Playlist */
     setPlaylist(user, url) {
         let sql;
+        const DBA = this;
         return this.getPlaylist(user)
             .then((result) => {
                 if (result.rows.length == 0) {
@@ -174,9 +175,8 @@ class DBAccess {
                            WHERE user_id = '%s'";
                     sql = util.format(sql, url, user);
                 }
-                return sql
+                return DBA.query(sql);
             })
-            .then(this.query(sql))
             .catch((e) => {
                 throw new Error(e);
             });

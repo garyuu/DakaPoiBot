@@ -77,6 +77,7 @@ client.on("message", (message) => {
                                 message.channel.send(util.format(lang.response.getPlaylist, result.rows[0].url));
                         })
                         .catch((e) => {
+                            console.log(e);
                             message.channel.send(lang.response.dberror);
                         });
                 }
@@ -88,6 +89,7 @@ client.on("message", (message) => {
                                 message.channel.send(lang.response.setPlaylist);
                             })
                             .catch((e) => {
+                                console.log(e);
                                 message.channel.send(lang.response.dberror);
                             });
                     }
