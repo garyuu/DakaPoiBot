@@ -161,9 +161,8 @@ class DBAccess {
     /* Playlist */
     setPlaylist(user, url) {
         let sql;
-        const DBA = this;
         return this.getPlaylist(user)
-            .then((result) => {
+            .then(((result) => {
                 if (result.rows.length == 0) {
                     sql = "INSERT INTO playlists(user_id, url) \
                            VALUES('%s', '%s')";
@@ -175,8 +174,8 @@ class DBAccess {
                            WHERE user_id = '%s'";
                     sql = util.format(sql, url, user);
                 }
-                return DBA.query(sql);
-            })
+                return this.query(sql);
+            }).bind(this))
             .catch((e) => {
                 throw new Error(e);
             });

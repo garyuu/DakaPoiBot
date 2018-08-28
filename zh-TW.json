@@ -20,6 +20,15 @@
         "setPlaylist": "我會努力記住這個清單的poi!",
         "urlerror": "這好像不是一個網址poi?",
 
+        "guess": {
+            "start": "猜數字遊戲開始了poi! 猜的:four:個數字不可以重複喔!",
+            "errorStart": "我現在沒辦法玩遊戲poi...",
+            "win": "答對了poi!!答案就是 **%s** poi!!",
+            "inGame": "現在是 **%s**\n`%s`",
+            "wrongGuess": "好可惜答錯了poi，現在是 **%s**\n`%s`",
+            "incorrectFormat": "要猜:four:個不同的數字啦poi!!"
+        },
+
         "dberror": "和資料庫的連線失敗了 poi...",
         "default": "Poi!!"
     }
