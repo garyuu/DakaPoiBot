@@ -161,18 +161,25 @@ class DBAccess {
     /* Playlist */
     setPlaylist(user, url) {
         let sql;
-        if (this.getPlaylist(user).rows.length == 0) {
-            sql = "INSERT INTO playlists(user_id, url) \
-                   VALUES('%s', '%s')";
-            sql = util.format(sql, user, url);
-        }
-        else {
-            sql = "UPDATE playlists \
-                   SET url = '%s' \
-                   WHERE user_id = '%s'";
-            sql = util.format(sql, url, user);
-        }
-        return this.query(sql);
+        return this.getPlaylist(user)
+            .then((result) => {
+                if (result.rows.length == 0) {
+                    sql = "INSERT INTO playlists(user_id, url) \
+                           VALUES('%s', '%s')";
+                    sql = util.format(sql, user, url);
+                }
+                else {
+                    sql = "UPDATE playlists \
+                           SET url = '%s' \
+                           WHERE user_id = '%s'";
+                    sql = util.format(sql, url, user);
+                }
+                return sql
+            })
+            .then(this.query(sql))
+            .catch((e) => {
+                throw new Error(e);
+            });
     }
 
     getPlaylist(user) {
