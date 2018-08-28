@@ -8,6 +8,8 @@ const urlRegex = require('url-regex');
 const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 //const caller = require('./rollcaller.js');
 
+let Guess = require('./lib/guessing_game.js');
+
 client.on("ready", () => {
     console.log(lang.system.ready);
 });
@@ -100,6 +102,41 @@ client.on("message", (message) => {
                 break;
             /* }}} */
 
+            /* Number Guessing {{{*/
+            case 'guess':
+            case '猜':
+                const guild = message.guild.id;
+                if (Guess.isRunning(guild)) {
+                    if (args.length == 0) {
+                        const status = Guess.status(guild);
+                        message.channel.send(util.format(lang.response.guess.inGame, status.hint, status.history));
+                    }
+                    else {
+                        Guess.guess(guild, args.shift())
+                            .then((result) => {
+                                if (result.win) {
+                                    message.channel.send(util.format(lang.response.guess.win, result.hint));
+                                }
+                                else {
+                                    message.channel.send(util.format(lang.response.guess.wrongGuess, result.hint, result.history));
+                                }
+                            })
+                            .catch((e) => {
+                                message.channel.send(lang.response.guess.incorrectFormat);
+                            });
+                    }
+                }
+                else {
+                    Guess.start(guild)
+                        .then((result) => {
+                            message.channel.send(lang.response.guess.start);
+                        })
+                        .catch((e) => {
+                            message.channel.send(lang.response.guess.errorStart);
+                        });
+                }
+                break;
+            //}}}
             default:
                 message.channel.send(lang.response.default);
         }
