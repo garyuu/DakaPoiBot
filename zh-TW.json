@@ -24,8 +24,8 @@
             "start": "猜數字遊戲開始了poi! 猜的:four:個數字不可以重複喔!",
             "errorStart": "我現在沒辦法玩遊戲poi...",
             "win": "答對了poi!!答案就是 **%s** poi!!",
-            "inGame": "現在是 **%s**\n`%s`",
-            "wrongGuess": "好可惜答錯了poi，現在是 **%s**\n`%s`",
+            "inGame": "現在是 **%s**\n` %s`",
+            "wrongGuess": "好可惜答錯了poi，現在是 **%s**\n` %s`",
             "incorrectFormat": "要猜:four:個不同的數字啦poi!!"
         },
 
