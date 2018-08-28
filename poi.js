@@ -5,7 +5,7 @@ const client = new discord.Client();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
 const urlRegex = require('url-regex');
-const db = new require('./db_access.js')(process.env.DATABASE_URL);
+const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 //const caller = require('./rollcaller.js');
 
 client.on("ready", () => {
@@ -73,7 +73,7 @@ client.on("message", (message) => {
                         .then((result) => {
                             message.channel.send(util.format(lang.response.getPlaylist, result.rows[0].url));
                         })
-                        .catch(e) => {
+                        .catch((e) => {
                             message.channel.send(lang.response.dberror);
                         });
                 }
@@ -84,7 +84,7 @@ client.on("message", (message) => {
                             .then((result) => {
                                 message.channel.send(lang.response.setPlaylist);
                             })
-                            .catch(e) => {
+                            .catch((e) => {
                                 message.channel.send(lang.response.dberror);
                             });
                     }
