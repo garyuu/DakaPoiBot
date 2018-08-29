@@ -11,6 +11,7 @@ const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 let Guess = require('./lib/guessing_game.js');
 
 client.on("ready", () => {
+    client.user.setGame("Poi, help");
     console.log(lang.system.ready);
 });
 
