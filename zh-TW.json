@@ -31,5 +31,28 @@
 
         "dberror": "和資料庫的連線失敗了 poi...",
         "default": "Poi!!"
-    }
+    },
+    "help": [
+        "既然你誠心誠意的發問了，就poi poi地告訴你poi。:sunglasses:",
+        ":small_blue_diamond:這些指令前面一定要加`Poi, `喔！",
+        "```",
+        "help: 說明",
+        "    -- 告訴你怎麼跟Poi玩！",
+        "hello: hi, 你好, 妳好",
+        "    -- 跟Poi說你好！",
+        "loveyou: love, loveu, 我愛你, 我愛妳, 愛你, 愛妳",
+        "    -- 跟Poi表示你的愛意，可是Poi心裡只有歐尼醬",
+        "playlist: 歌單, 播放清單",
+        "    -- 問Poi你存的歌單",
+        "    -- 後面加網址可以保存這個歌單(只能存:one:個喔！)",
+        "guess: 猜",
+        "    -- 猜猜Poi所選的數字吧！",
+        "```",
+        ":small_blue_diamond:當有人提到以下關鍵字的時候Poi就會冒出來！",
+        "```",
+        "- 當提到「噁心」的時候",
+        "- 當開頭是「OT」的時候",
+        "```",
+        "希望大家都能開心跟Poi玩！:stuck_out_tongue_closed_eyes:"
+    ]
 }
