@@ -55,6 +55,9 @@ client.on("message", (message) => {
             /* }}} */
 
             /* Love {{{ */
+            case 'love':
+            case 'loveyou':
+            case 'loveu':
             case '我愛你':
             case '我愛妳':
             case '愛你':
@@ -137,6 +140,14 @@ client.on("message", (message) => {
                 }
                 break;
             //}}}
+
+            /* Help {{{*/
+            case 'help':
+            case '說明':
+                message.channel.send(lang.help.join('\n'));
+                break;
+            //}}}
+
             default:
                 message.channel.send(lang.response.default);
         }
