@@ -11,7 +11,7 @@ const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 let Guess = require('./lib/guessing_game.js');
 
 client.on("ready", () => {
-    client.user.setGame("Poi, help");
+    client.user.setActivity("Poi, help");
     console.log(lang.system.ready);
 });
 
@@ -148,6 +148,30 @@ client.on("message", (message) => {
             case 'help':
             case '說明':
                 message.channel.send(lang.help.join('\n'));
+                break;
+            //}}}
+
+            /* Clean {{{*/
+            case 'clean':
+            case '清除':
+                let limit = 20;
+                if (args.length > 0) {
+                    const l = parseInt(args.shift());
+                    if (l < 1)
+                        return;
+                    else if (l < 20)
+                        limit = l;
+                }
+                message.channel.fetchMessages({limit: limit})
+                    .then((msgs) => {
+                        for (let m of msgs.array()) {
+                            if (m.deletable && (m.author.id == client.user.id || m.content.startsWith(prefix)))
+                                m.delete();
+                        }
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
                 break;
             //}}}
 
