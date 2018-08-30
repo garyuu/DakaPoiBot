@@ -30,6 +30,7 @@
         },
 
         "dberror": "和資料庫的連線失敗了 poi...",
+        "mention": "找我有什麼事嗎poi?",
         "default": "Poi!!"
     },
     "help": [

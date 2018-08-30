@@ -18,7 +18,9 @@ client.on("ready", () => {
 client.on("message", (message) => {
     if (message.author.bot)
         return;
-    if (message.content.startsWith(prefix)) {
+    if (message.mentions.users.has(client.user.id))
+        message.channel.send(lang.response.mention);
+    else if (message.content.startsWith(prefix)) {
         const args = message.content.slice(prefix.length).trim().replace(/\s+/g, ' ').split(' ');
         const command = args.shift().toLowerCase();
         switch (command) {
