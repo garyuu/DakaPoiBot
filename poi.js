@@ -179,12 +179,17 @@ client.on("message", (message) => {
                 message.channel.send(lang.response.default);
         }
     }
-    else if (message.content.includes("噁心") || message.content.toLowerCase() == ("ot")) {
+    /* Special Key Word {{{*/
+    else if (message.content.includes("噁心") || message.content.toLowerCase() == "ot") {
         message.channel.send(lang.response.yuck);
     }
     else if (message.content.includes("馬英九")) {
         message.channel.send(lang.response.mayingjo);
     }
+    else if (message.content == "嗚") {
+        message.channel.send(lang.response.nyan);
+    }
+    //}}}
 });
 
 client.login(process.env.BOT_TOKEN);
