@@ -30,6 +30,11 @@
             "incorrectFormat": "要猜:four:個不同的數字啦poi!!"
         },
 
+        "dice": {
+            "result": "`%s`\n= %d Poi!!",
+            "wrongFormat": "這樣寫我看不懂poi..."
+        },
+
         "dberror": "和資料庫的連線失敗了 poi...",
         "mention": "找我有什麼事嗎poi?",
         "default": "Poi!!"
@@ -54,6 +59,8 @@
         "       後面加網址可以保存這個歌單(只能存 1 個喔！)",
         "guess: 猜",
         "    -- 猜猜Poi所選的數字吧！",
+        "roll: dice, 檢定, 丟",
+        "    -- 讓Poi幫你丟骰子，只能是xDy或常數的加減喔！",
         "```",
         ":small_blue_diamond:當有人提到以下關鍵字的時候Poi就會冒出來！",
         "```",

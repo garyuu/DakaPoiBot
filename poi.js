@@ -144,6 +144,52 @@ client.on("message", (message) => {
                 break;
             //}}}
 
+            /* Roll Dice {{{*/
+            case 'roll':
+            case 'dice':
+            case '檢定':
+            case '丟':
+                const diceRegex = /^\s*[1-9]\d*([Dd][1-9]\d*)?(\s*(\+|-)\s*[1-9]\d*([Dd][1-9]\d*)?)*\s*$/;
+                let exp = args.join('');
+                if (exp.match(diceRegex) != null) {
+                    const rollDice = new Promise((resolve, reject) => {
+                        exp = exp.replace(/\s+/g, '');
+                        let valueArray = exp.split('+');
+                        const rollDice = (x) => {
+                            return Math.floor(Math.random()*x) + 1;
+                        }
+                        for(let i in valueArray) {
+                            if (isNaN(valueArray[i])) {
+                                let pair = valueArray[i].split(/[Dd]/);
+                                let val = 0;
+                                const dice = Number(pair[1]);
+                                for (let j = 0; j < Number(pair[0]); j++) {
+                                    val += rollDice(dice);
+                                }
+                                valueArray[i] = String(val);
+                            }
+                        }
+                        const equal = valueArray.join(' + ');
+                        const sum = eval(equal);
+                        resolve({
+                            equal: equal,
+                            sum: sum
+                        });
+                    })
+                    .then((result) => {
+                        message.channel.send(util.format(lang.response.dice.result, result.equal, result.sum));
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        message.channel.send(lang.response.dice.wrongFormat)
+                    });
+                }
+                else {
+                    message.channel.send(lang.response.dice.wrongFormat)
+                }
+                break;
+            //}}}
+
             /* Help {{{*/
             case 'help':
             case '說明':
