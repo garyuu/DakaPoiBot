@@ -159,7 +159,7 @@ client.on("message", (message) => {
                             return Math.floor(Math.random()*x) + 1;
                         }
                         for(let i in valueArray) {
-                            if (isNaN(valueArray[i])) {
+                            if (isNaN(valueArray[i]) && valueArray[i].match(/\+|-/) == null) {
                                 let pair = valueArray[i].split(/[Dd]/);
                                 let val = 0;
                                 const dice = Number(pair[1]);
@@ -169,7 +169,7 @@ client.on("message", (message) => {
                                 valueArray[i] = String(val);
                             }
                         }
-                        const equal = valueArray.join(' + ');
+                        const equal = valueArray.join(' ');
                         const sum = eval(equal);
                         resolve({
                             equal: equal,
