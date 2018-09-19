@@ -31,7 +31,7 @@
         },
 
         "dice": {
-            "result": "`%s`\n= %d Poi!!",
+            "result": "`%s`\n= **%d** Poi!!",
             "wrongFormat": "這樣寫我看不懂poi..."
         },
 

@@ -154,7 +154,7 @@ client.on("message", (message) => {
                 if (exp.match(diceRegex) != null) {
                     const rollDice = new Promise((resolve, reject) => {
                         exp = exp.replace(/\s+/g, '');
-                        let valueArray = exp.split('+');
+                        let valueArray = exp.split(/(\+|-)/);
                         const rollDice = (x) => {
                             return Math.floor(Math.random()*x) + 1;
                         }
