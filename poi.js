@@ -9,6 +9,7 @@ const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 //const caller = require('./rollcaller.js');
 
 let Guess = require('./lib/guessing_game.js');
+let Dice = require('./lib/dice_roller.js');
 
 client.on("ready", () => {
     client.user.setActivity("Poi, help");
@@ -155,18 +156,10 @@ client.on("message", (message) => {
                     const rollDice = new Promise((resolve, reject) => {
                         exp = exp.replace(/\s+/g, '');
                         let valueArray = exp.split(/(\+|-)/);
-                        const rollDice = (x) => {
-                            return Math.floor(Math.random()*x) + 1;
-                        }
                         for(let i in valueArray) {
                             if (isNaN(valueArray[i]) && valueArray[i].match(/\+|-/) == null) {
                                 let pair = valueArray[i].split(/[Dd]/);
-                                let val = 0;
-                                const dice = Number(pair[1]);
-                                for (let j = 0; j < Number(pair[0]); j++) {
-                                    val += rollDice(dice);
-                                }
-                                valueArray[i] = String(val);
+								valueArray[i] = Dice.roll(pair[0], pair[1]);
                             }
                         }
                         const equal = valueArray.join(' ');
