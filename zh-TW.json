@@ -17,9 +17,18 @@
         "nooneloveyou": "可惜沒有人愛你:broken_heart:poi...",
 
         "noplaylist": "我不記得你有告訴過我poi...在後面加個清單網址我就會記得了poi!!",
-        "getPlaylist": "我記得你的清單是這個poi!!\n> `%s` <",
+        "getPlaylist": "我記得你的清單是這個poi!!\n`%s`",
         "setPlaylist": "我會努力記住這個清單的poi!",
         "urlerror": "這好像不是一個網址poi?",
+    
+        "fanfare": {
+            "musicNotFound": "Poi沒有找到你的入場音樂poi...",
+            "getFanfare": "你現在的入場音樂是這個poi!!\n%s",
+            "setFanfare": "幫你記住入場音樂了poi!!",
+            "switchOn": "幫你打開入場音樂了poi!!",
+            "switchOff": "幫你關掉入場音樂了poi!!",
+            "commandError": "Poi看不懂這個指令耶poi..."
+        },
 
         "guess": {
             "start": "猜數字遊戲開始了poi! 猜的:four:個數字不可以重複喔!",
@@ -67,6 +76,7 @@
         "- 當提到「噁心」的時候",
         "- 當整句話只有「OT」的時候",
         "- 當提到「馬英九」的時候",
+        "- 當整句話只有「嗚」的時候",
         "```",
         "希望大家都能開心跟Poi玩！:stuck_out_tongue_closed_eyes:"
     ]
