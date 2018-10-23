@@ -10,6 +10,7 @@ const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 
 let Guess = require('./lib/guessing_game.js');
 let Dice = require('./lib/dice_roller.js');
+let temp;
 
 client.on("ready", () => {
     client.user.setActivity("Poi, help");
@@ -227,6 +228,10 @@ client.on("message", (message) => {
     }
     else if (message.content == "嗚") {
         message.channel.send(lang.response.nyan);
+    }
+    else if ((temp = message.content.match(/88+/)) != null) {
+        let rand = 1 + Math.random() * 0.4 - 0.2;
+        message.channel.send("8".repeat(Math.round(temp[0].length * rand)));
     }
     //}}}
 });
