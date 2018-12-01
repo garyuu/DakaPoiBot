@@ -220,6 +220,9 @@ client.on("message", (message) => {
         }
     }
     /* Special Key Word {{{*/
+    else if (message.content.includes("://")) {
+        return;
+    }
     else if (message.content.includes("噁心") || message.content.toLowerCase() == "ot") {
         message.channel.send(lang.response.yuck);
     }
