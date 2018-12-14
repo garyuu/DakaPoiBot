@@ -1,5 +1,4 @@
 import sys
-reload(sys)     
 sys.setdefaultencoding("utf-8")
 import codecs
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
