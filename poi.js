@@ -219,7 +219,6 @@ client.on("message", (message) => {
             /* Dirty {{{*/
             case 'dirty':
                 const msg = message.content.slice(prefix.length+command.length+1).trim();
-                console.log(msg);
                 const result = exec('python3 dirtyWordGenerator.py "' + msg + '"', (e, out, err) => {
                     if (e) {
                         console.error(e);
