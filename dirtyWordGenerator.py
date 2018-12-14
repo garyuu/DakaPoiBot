@@ -15,4 +15,4 @@ for i in range(len(inputStr)):
     for j in range(random.randint(1,10)):
       symbol = random.randint(0x0300, 0x036F)
       outputStr += ''.join(chr(symbol))
-print(outputStr.encode('utf-8', 'ignore').decode('utf-8'))
+print(outputStr.encode('utf-8', 'surrogateescape').decode('utf-8'))
