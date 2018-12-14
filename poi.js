@@ -6,6 +6,7 @@ const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
 const urlRegex = require('url-regex');
 const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
+const exec = require('child_process').exec;
 //const caller = require('./rollcaller.js');
 
 let Guess = require('./lib/guessing_game.js');
@@ -212,6 +213,20 @@ client.on("message", (message) => {
                     .catch((e) => {
                         console.log(e);
                     });
+                break;
+            //}}}
+
+            /* Dirty {{{*/
+            case 'dirty':
+                const msg = message.content.slice(prefix.length+command.length+1).trim();
+                const result = exec('python3 dirtyWordGenerator.py ' + msg, (e, out, err) => {
+                    if (e) {
+                        console.error(e);
+                        return;
+                    }
+                    message.channel.send(out);
+                    console.log(err);
+                });
                 break;
             //}}}
 
