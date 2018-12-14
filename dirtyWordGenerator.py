@@ -6,7 +6,8 @@ try:
     name, inputStr = argv
 except:
     inputStr = input("Input text: ")
-outputStr = u'';
+inputStr = inputStr.encode('utf-8').decode('utf-8')
+outputStr = ''
 for i in range(len(inputStr)):
     outputStr += inputStr[i] + ''.join(chr(0x0489))
     for j in range(random.randint(1,2)):
