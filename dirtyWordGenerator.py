@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+import sys
+import codecs
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
 from sys import argv
 import random
 
