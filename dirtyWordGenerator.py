@@ -3,12 +3,12 @@ import codecs
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
 from sys import argv
 import random
+print(sys.getfilesystemencoding(), file=sys.stderr)
 
 try:
     name, inputStr = argv
 except:
     inputStr = input("Input text: ")
-print(inputStr, file=sys.stderr)
 outputStr = ''
 for i in range(len(inputStr)):
     outputStr += inputStr[i]# + ''.join(chr(0x0489))
