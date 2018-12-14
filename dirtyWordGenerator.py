@@ -1,6 +1,6 @@
-import sys
-import codecs
-sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+#import sys
+#import codecs
+#sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
 from sys import argv
 import random
 print(sys.getfilesystemencoding(), file=sys.stderr)
