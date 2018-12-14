@@ -219,6 +219,17 @@ client.on("message", (message) => {
             /* Dirty {{{*/
             case 'dirty':
                 const msg = message.content.slice(prefix.length+command.length+1).trim();
+                let result = "";
+                for (let i = 0; i < msg.length; i++) {
+                    result += msg[i] + (msg.charCodeAt(i) < 0x0080 ? '' : String.fromCharCode(0x0489));
+                    const rnd = Math.floor(Math.random() * 10) + 1;
+                    for (let j = 0; j < rnd; j++) {
+                        const char = Math.floor(Math.random() * (0x0370-0x0300)) + 0x0300;
+                        result += String.fromCharCode(char);
+                    }
+                }
+                message.channel.send(result);
+                /*
                 const result = exec('python3 dirtyWordGenerator.py "' + msg + '"', (e, out, err) => {
                     if (e) {
                         console.error(e);
@@ -227,6 +238,7 @@ client.on("message", (message) => {
                     message.channel.send(out);
                     console.log(err);
                 });
+                */
                 break;
             //}}}
 
