@@ -1,0 +1,87 @@
+{
+    "system": {
+        "ready": "我準備好了 Poi!"
+    },
+    "response": {
+        "hello": "%s 同學，你好!",
+        "helloonichan": "佩斯今天也很有精神呢!",
+
+        "successfulJoin": "%s 成功加入了 %s poi!",
+        "successfulLeave": "%s 離開了 %s poi。",
+
+        "yuck": "好噁～ :oncoming_police_car:",
+        "mayingjo": "還我:cow:!!",
+        "nyan": "喵",
+
+        "loveonichan": "佩斯～:heart:(蹭蹭",
+        "nooneloveyou": "抱歉，那個的話有點...:broken_heart:",
+
+        "noplaylist": "我不記得你有告訴過我poi...在後面加個清單網址我就會記得了poi!!",
+        "getPlaylist": "我記得你的清單是這個poi!!\n`%s`",
+        "setPlaylist": "我會努力記住這個清單的poi!",
+        "urlerror": "這好像不是一個網址poi?",
+    
+        "fanfare": {
+            "musicNotFound": "Poi沒有找到你的入場音樂poi...",
+            "getFanfare": "你現在的入場音樂是這個poi!!\n%s",
+            "setFanfare": "幫你記住入場音樂了poi!!",
+            "switchOn": "幫你打開入場音樂了poi!!",
+            "switchOff": "幫你關掉入場音樂了poi!!",
+            "commandError": "Poi看不懂這個指令耶poi..."
+        },
+
+        "guess": {
+            "start": "猜數字遊戲開始了打yo! 猜的:four:個數字不可以重複的yo!",
+            "errorStart": "我現在沒辦法玩遊戲...",
+            "win": "答對了咚!!答案就是 **%s** 打油!!",
+            "inGame": "現在是 **%s**\n`> %s`",
+            "wrongGuess": "答錯了yo，現在是 **%s**\n`> %s`",
+            "incorrectFormat": "要猜:four:個不同的數字打油!!"
+        },
+
+        "dice": {
+            "result": "`%s`\n= **%d** !!",
+            "wrongFormat": "這樣寫我看不懂..."
+        },
+
+        "dberror": "和資料庫的連線失敗了...",
+        "mention": "Jin Jin?",
+        "default": "咚～打油!!"
+    },
+    "help": [
+        "既然你誠心誠意的發問了，就poi poi地告訴你poi。:sunglasses:",
+        "這是Poi的家：https://github.com/garyuu/DakaPoiBot",
+        "`最近可能有什麼特別不一樣的地方…`",
+        ":small_blue_diamond:這些指令前面一定要加`Poi, `喔！",
+        "```",
+        "help: 說明",
+        "    -- 告訴你怎麼跟Poi玩！",
+        "hello: hi, 你好, 妳好",
+        "    -- 跟Poi說你好！",
+        "clean: 清除",
+        "    -- 如果你真的覺得Poi很吵，Poi會幫你清掉一些Poi說的話",
+        "       如果可以，會順便清掉開頭是Poi, 的指令",
+        "       後面加數字可以讓Poi不要清那麼多訊息",
+        "loveyou: love, loveu, 我愛你, 我愛妳, 愛你, 愛妳",
+        "    -- 跟Poi表示你的愛意，可是Poi心裡只有歐尼醬",
+        "playlist: 歌單, 播放清單",
+        "    -- 問Poi你存的歌單",
+        "       後面加網址可以保存這個歌單(只能存 1 個喔！)",
+        "guess: 猜",
+        "    -- 猜猜Poi所選的數字吧！",
+        "roll: dice, 檢定, 丟",
+        "    -- 讓Poi幫你丟骰子，只能是xDy或常數的加減喔！",
+        "dirty:",
+        "    -- 讓Poi幫你把整句話Poi掉！",
+        "```",
+        ":small_blue_diamond:當有人提到以下關鍵字的時候Poi就會冒出來！",
+        "```",
+        "- 當提到「噁心」的時候",
+        "- 當整句話只有「OT」的時候",
+        "- 當提到「馬英九」的時候",
+        "- 當整句話只有「嗚」的時候",
+        "- 當有「8888」的時候",
+        "```",
+        "希望大家都能開心跟Poi玩！:stuck_out_tongue_closed_eyes:"
+    ]
+}
