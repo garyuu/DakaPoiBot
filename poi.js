@@ -9,6 +9,7 @@ const db = new (require('./db_access.js'))(process.env.DATABASE_URL);
 const exec = require('child_process').exec;
 //const caller = require('./rollcaller.js');
 
+const Command = require('./lib/commands/command.js');
 let Guess = require('./lib/guessing_game.js');
 let Dice = require('./lib/dice_roller.js');
 let temp;
@@ -249,7 +250,14 @@ client.on("message", (message) => {
             //}}}
 
             default:
-                message.channel.send(lang.response.default);
+                Command.execute(command, args)
+                    .then((msg) => { 
+                        message.channel.send(msg.data);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                        message.channel.send(lang.response.default);
+                    });
         }
     }
     /* Special Key Word {{{*/
