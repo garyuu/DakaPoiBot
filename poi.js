@@ -263,8 +263,9 @@ client.on("message", (message) => {
     /* Special Key Word {{{*/
     else if (message.content.includes("://")) {
         const newURL = message.content.replace("m.facebook", "facebook");
+        if (message.content === newURL)
+            return;
         message.channel.send(newURL);
-        return;
     }
     else if (message.content.includes("噁心") || message.content.toLowerCase() == "ot") {
         message.channel.send(lang.response.yuck);
