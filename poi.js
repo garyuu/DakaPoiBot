@@ -95,7 +95,7 @@ client.on("message", (message) => {
                 }
                 else {
                     const url = args.shift();
-                    if (urlRegex({exact: true, strict: true}).test(url)) {
+                    if (urlRegex({ exact: true, strict: true }).test(url)) {
                         db.setPlaylist(message.author.id, url)
                             .then((result) => {
                                 message.channel.send(lang.response.setPlaylist);
@@ -159,10 +159,10 @@ client.on("message", (message) => {
                     const rollDice = new Promise((resolve, reject) => {
                         exp = exp.replace(/\s+/g, '');
                         let valueArray = exp.split(/(\+|-)/);
-                        for(let i in valueArray) {
+                        for (let i in valueArray) {
                             if (isNaN(valueArray[i]) && valueArray[i].match(/\+|-/) == null) {
                                 let pair = valueArray[i].split(/[Dd]/);
-								valueArray[i] = Dice.roll(pair[0], pair[1]);
+                                valueArray[i] = Dice.roll(pair[0], pair[1]);
                             }
                         }
                         const equal = valueArray.join(' ');
@@ -172,13 +172,13 @@ client.on("message", (message) => {
                             sum: sum
                         });
                     })
-                    .then((result) => {
-                        message.channel.send(util.format(lang.response.dice.result, result.equal, result.sum));
-                    })
-                    .catch((e) => {
-                        console.log(e);
-                        message.channel.send(lang.response.dice.wrongFormat)
-                    });
+                        .then((result) => {
+                            message.channel.send(util.format(lang.response.dice.result, result.equal, result.sum));
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                            message.channel.send(lang.response.dice.wrongFormat)
+                        });
                 }
                 else {
                     message.channel.send(lang.response.dice.wrongFormat)
@@ -204,7 +204,7 @@ client.on("message", (message) => {
                     else if (l < 20)
                         limit = l;
                 }
-                message.channel.fetchMessages({limit: limit})
+                message.channel.fetchMessages({ limit: limit })
                     .then((msgs) => {
                         for (let m of msgs.array()) {
                             if (m.deletable && (m.author.id == client.user.id || m.content.startsWith(prefix)))
@@ -219,7 +219,7 @@ client.on("message", (message) => {
 
             /* Dirty {{{*/
             case 'dirty':
-                const msg = message.content.slice(prefix.length+command.length+1).trim();
+                const msg = message.content.slice(prefix.length + command.length + 1).trim();
                 let result = "";
                 let skip = false;
                 for (let i = 0; i < msg.length; i++) {
@@ -231,7 +231,7 @@ client.on("message", (message) => {
                     result += msg.charAt(i) + (msg.charCodeAt(i) < 0x0080 ? '' : String.fromCharCode(0x0489));
                     const rnd = Math.floor(Math.random() * 10) + 1;
                     for (let j = 0; j < rnd; j++) {
-                        const char = Math.floor(Math.random() * (0x0370-0x0300)) + 0x0300;
+                        const char = Math.floor(Math.random() * (0x0370 - 0x0300)) + 0x0300;
                         result += String.fromCharCode(char);
                     }
                 }
@@ -251,7 +251,7 @@ client.on("message", (message) => {
 
             default:
                 Command.execute(command, args)
-                    .then((msg) => { 
+                    .then((msg) => {
                         message.channel.send(msg.data);
                     })
                     .catch((e) => {
@@ -262,6 +262,8 @@ client.on("message", (message) => {
     }
     /* Special Key Word {{{*/
     else if (message.content.includes("://")) {
+        const newURL = message.content.replace("m.facebook", "facebook");
+        message.channel.send(newURL);
         return;
     }
     else if (message.content.includes("噁心") || message.content.toLowerCase() == "ot") {
