@@ -10,6 +10,7 @@ const exec = require('child_process').exec;
 //const caller = require('./rollcaller.js');
 
 const Command = require('./lib/commands/command.js');
+const URLFilter = require('./lib/url_filter');
 let Guess = require('./lib/guessing_game.js');
 let Dice = require('./lib/dice_roller.js');
 let temp;
@@ -262,10 +263,16 @@ client.on("message", (message) => {
     }
     /* Special Key Word {{{*/
     else if (message.content.includes("://")) {
-        const newURL = message.content.replace("m.facebook", "facebook");
+        const newURL = URLFilter.filter(message.content);
         if (message.content === newURL)
             return;
         message.channel.send(newURL);
+        if (message.deletable) {
+            for (let role of message.member.roles.values())
+                if (role.name.toLowerCase() === 'cybersecurity')
+                    return;
+            message.delete();
+        }
     }
     else if (message.content.includes("噁心") || message.content.toLowerCase() == "ot") {
         message.channel.send(lang.response.yuck);
