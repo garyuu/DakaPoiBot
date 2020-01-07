@@ -266,7 +266,7 @@ client.on("message", (message) => {
         const newURL = URLFilter.filter(message.content);
         if (message.content === newURL)
             return;
-        message.channel.send(newURL);
+        message.channel.send(`<@${message.author.id}>:\n${newURL}`);
         if (message.deletable) {
             for (let role of message.member.roles.values())
                 if (role.name.toLowerCase() === 'cybersecurity')
