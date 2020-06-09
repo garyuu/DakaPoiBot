@@ -20,6 +20,7 @@
         "getPlaylist": "我記得你的清單是這個poi!!\n`%s`",
         "setPlaylist": "我會努力記住這個清單的poi!",
         "urlerror": "這好像不是一個網址poi?",
+        "filteredMessage": "<@!%s>\n%s",
     
         "fanfare": {
             "musicNotFound": "Poi沒有找到你的入場音樂poi...",
