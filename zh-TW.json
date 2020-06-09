@@ -37,7 +37,8 @@
             "win": "答對了poi!!答案就是 **%s** poi!!",
             "inGame": "現在是 **%s**\n`> %s`",
             "wrongGuess": "好可惜答錯了poi，現在是 **%s**\n`> %s`",
-            "incorrectFormat": "要猜:four:個不同的數字啦poi!!"
+            "incorrectFormat": "要猜:four:個不同的數字啦poi!!",
+            "stop": "不跟我玩了嗎poi..."
         },
 
         "dice": {
