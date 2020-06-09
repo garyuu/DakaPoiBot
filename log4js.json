@@ -1,0 +1,37 @@
+{
+    "appenders": {
+        "out": { "type": "stdout" },
+        "app": {
+            "type": "file",
+            "filename": "logs/app.log",
+            "maxLogSize": 32768,
+            "numBackups": 4
+        },
+        "module": {
+            "type": "file",
+            "filename": "logs/module.log",
+            "maxLogSize": 32768,
+            "numBackups": 4
+        },
+        "errorFile": {
+            "type": "file",
+            "filename": "logs/error.log",
+            "maxLogSize": 32768
+        },
+        "error": {
+            "type": "logLevelFilter",
+            "level": "ERROR",
+            "appender": "errorFile"
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": ["out", "app", "error"],
+            "level": "DEBUG"
+        },
+        "module": {
+            "appenders": ["out", "module", "error"],
+            "level": "DEBUG"
+        }
+    }
+}

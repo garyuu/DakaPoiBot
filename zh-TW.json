@@ -44,6 +44,12 @@
             "wrongFormat": "這樣寫我看不懂poi..."
         },
 
+        "time": {
+            "timezone": "請先告訴我想看哪個時區poi!",
+            "format": "時間這樣寫poi看不懂...這樣寫的話就very poi!\n```%s time TW 11:20\n%s time 日本 06-08 12:00\n%s time WeStUs 2000-11-25 20:04:32```"
+        },
+
+        "unexperror": "不知道發生什麼事了poi...:persevere:",
         "dberror": "和資料庫的連線失敗了 poi...",
         "mention": "找我有什麼事嗎poi?",
         "default": "Poi!!"
