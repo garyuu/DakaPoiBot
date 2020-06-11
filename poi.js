@@ -4,12 +4,13 @@ const urlRegex = require('url-regex');
 const discord = require('discord.js');
 const { configure, getLogger } = require('log4js');
 
-const client = new discord.Client();
+const client = new discord.Client(['MESSAGE', 'REACTION']);
 configure(require('./log4js.json'));
 const logger = getLogger();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
 const db = new (require('./lib/db_access.js'))(process.env.DATABASE_URL);
+
 
 const app = {
     client: client,
@@ -21,21 +22,27 @@ const app = {
 const Command = require('./lib/command')(app);
 const URLFilter = require('./lib/url_filter')(app);
 const KeywordsTrigger = require('./lib/keywords')(app);
+const EmojiTrigger = require('./lib/emoji_trigger')(app);
+
+app.emojiTrigger = EmojiTrigger;
 
 
 if (process.env.DEBUG) {
     const send = discord.TextChannel.prototype.send;
     discord.TextChannel.prototype.send = function (content, options) {
-        send.call(this, "[DEBUG] " + content, options);
+        return send.call(this, "[DEBUG] " + content, options);
     };
 }
 
-client.on("ready", () => {
+client.once('ready', () => {
     client.user.setActivity("Poi, help");
     logger.info(lang.system.ready);
 });
 
-client.on("message", (message) => {
+client.on('message', async (message) => {
+    // Only make response in specific channels on debug mode
+    if (process.env.DEBUG && !message.channel.name.toLowerCase().includes('bot'))
+        return;
 
     // Ignore message sent by bot.
     if (message.author.bot)
@@ -78,6 +85,28 @@ client.on("message", (message) => {
 
     // Special Key Word
     KeywordsTrigger.trigger(message);
+});
+
+async function onReactionChange(react, user, isAdd) {
+    if (react.partial) {
+        try {
+            await react.fetch();
+        } catch (e) {
+            logger.console.warn(`Fetching message failed. ${e}`);
+            return;
+        }
+    }
+    EmojiTrigger.trigger(react, user, isAdd);
+}
+
+client.on('messageReactionAdd', async (react, user) => {
+    if (user.bot) return;
+    onReactionChange(react, user, true);
+});
+
+client.on('messageReactionRemove', async (react, user) => {
+    if (user.bot) return;
+    onReactionChange(react, user, false);
 });
 
 client.login(process.env.BOT_TOKEN);

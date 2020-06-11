@@ -11,7 +11,13 @@
             "type": "file",
             "filename": "logs/module.log",
             "maxLogSize": 32768,
-            "numBackups": 4
+            "numBackups": 2
+        },
+        "game": {
+            "type": "file",
+            "filename": "logs/game.log",
+            "maxLogSize": 32768,
+            "numBackups": 2
         },
         "errorFile": {
             "type": "file",
