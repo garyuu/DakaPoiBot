@@ -67,7 +67,7 @@ client.on('message', async (message) => {
     }
     
     // Url filter.
-    const hasUrl = urlRegex().test(message.content);
+    const hasURL = urlRegex().test(message.content);
     if (hasUrl) {
         const newMsg = URLFilter.filter(message.content);
         if (message.content !== newMsg) {
