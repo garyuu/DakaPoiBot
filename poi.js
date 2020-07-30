@@ -68,7 +68,7 @@ client.on('message', async (message) => {
     
     // Url filter.
     const hasURL = urlRegex().test(message.content);
-    if (hasUrl) {
+    if (hasURL) {
         const newMsg = URLFilter.filter(message.content);
         if (message.content !== newMsg) {
             message.channel.send(util.format(lang.response.filteredMessage, message.author.id, newMsg));
