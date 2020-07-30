@@ -67,7 +67,8 @@ client.on('message', async (message) => {
     }
     
     // Url filter.
-    if (urlRegex().test(message.content)) {
+    const hasUrl = urlRegex().test(message.content);
+    if (hasUrl) {
         const newMsg = URLFilter.filter(message.content);
         if (message.content !== newMsg) {
             message.channel.send(util.format(lang.response.filteredMessage, message.author.id, newMsg));
@@ -84,7 +85,7 @@ client.on('message', async (message) => {
     }
 
     // Special Key Word
-    KeywordsTrigger.trigger(message);
+    KeywordsTrigger.trigger(message, hasURL);
 });
 
 async function onReactionChange(react, user, isAdd) {
