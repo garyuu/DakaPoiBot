@@ -20,6 +20,7 @@ const app = {
     db: db,
 };
 const Command = require('./lib/command')(app);
+const FixTwitter = require('./lib/fix_twitter')(app);
 const URLFilter = require('./lib/url_filter')(app);
 const KeywordsTrigger = require('./lib/keywords')(app);
 const EmojiTrigger = require('./lib/emoji_trigger')(app);
@@ -32,6 +33,16 @@ if (process.env.DEBUG) {
     discord.TextChannel.prototype.send = function (content, options) {
         return send.call(this, "[DEBUG] " + content, options);
     };
+}
+
+function deleteMessage(message) {
+    if (message.deletable) {
+        for (let role of message.member.roles.values())
+            if (role.name.toLowerCase() === 'cybersecurity')
+                return;
+        message.delete()
+            .catch(e => { logger.warn(e); });
+    }
 }
 
 client.once('ready', () => {
@@ -65,20 +76,16 @@ client.on('message', async (message) => {
             });
         return;
     }
-    
+
     // Url filter.
     const hasURL = urlRegex().test(message.content);
     if (hasURL) {
-        const newMsg = URLFilter.filter(message.content);
+        // Fix twitter video
+        let newMsg = FixTwitter.fix(message);
+        newMsg = URLFilter.filter(newMsg);
         if (message.content !== newMsg) {
             message.channel.send(util.format(lang.response.filteredMessage, message.author.id, newMsg));
-            if (message.deletable) {
-                for (let role of message.member.roles.values())
-                    if (role.name.toLowerCase() === 'cybersecurity')
-                        return;
-                message.delete()
-                    .catch(e => { logger.warn(e); });
-            }
+            deleteMessage(message)
             return;
         }
         // Continue if no url is modified.
@@ -108,6 +115,21 @@ client.on('messageReactionAdd', async (react, user) => {
 client.on('messageReactionRemove', async (react, user) => {
     if (user.bot) return;
     onReactionChange(react, user, false);
+});
+
+client.on('messageUpdate', async (oldMsg, newMsg) => {
+    if (newMsg.author.bot && !newMsg.author.equals(client.user))
+        return;
+    const content = FixTwitter.fix(newMsg);
+    if (newMsg.content !== content) {
+        if (newMsg.author.equals(client.user))
+            newMsg.edit(content);
+        else {
+            newMsg.channel.send(util.format(lang.response.filteredMessage, newMsg.author.id, content));
+            deleteMessage(newMsg);
+            return;
+        }
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
