@@ -62,6 +62,12 @@ client.once('ready', () => {
     logger.info(lang.system.ready);
 });
 
+client.on('guildCreate', (guild) => {
+    guild.emojis.fetch();
+    guild.roles.fetch();
+    guild.members.fetch();
+});
+
 client.on('messageCreate', async (message) => {
     // Only make response in specific channels on debug mode
     if (process.env.DEBUG && (!message.channel.name || !message.channel.name.toLowerCase().includes('bot')))
