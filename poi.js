@@ -2,15 +2,17 @@ require('dotenv').config();
 const util = require('util');
 const urlRegex = require('url-regex');
 const discord = require('discord.js');
+const intentsConfig = require('./lib/intents.js');
 const { configure, getLogger } = require('log4js');
 
-const client = new discord.Client(['MESSAGE', 'REACTION']);
+const client = new discord.Client({
+    intents: intentsConfig
+});
 configure(require('./log4js.json'));
 const logger = getLogger();
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
 const db = new (require('./lib/db_access.js'))(process.env.DATABASE_URL);
-
 
 const app = {
     client: client,
@@ -30,18 +32,28 @@ app.emojiTrigger = EmojiTrigger;
 
 if (process.env.DEBUG) {
     const send = discord.TextChannel.prototype.send;
-    discord.TextChannel.prototype.send = function (content, options) {
-        return send.call(this, "[DEBUG] " + content, options);
+    discord.TextChannel.prototype.send = function (options) {
+        if (typeof options === 'string') {
+            return send.call(this, "[DEBUG] " + options);
+        } else {
+            options.content = "[DEBUG] " + options.content;
+            return send.call(this, options);
+        }
     };
 }
 
-function deleteMessage(message) {
+/**
+ * 
+ * @param {discord.Message} message 
+ * @returns 
+ */
+async function deleteMessage(message) {
     if (message.deletable) {
-        for (let role of message.member.roles.values())
-            if (role.name.toLowerCase() === 'cybersecurity')
-                return;
+        await message.member.fetch();
+        if (message.member.roles.cache.find(role => role.name.toLowerCase().trim() === 'cybersecurity'))
+            return;
         message.delete()
-            .catch(e => { logger.warn(e); });
+            .catch(e => { logger.warn("[SAFE]\n" + e); });
     }
 }
 
@@ -50,9 +62,9 @@ client.once('ready', () => {
     logger.info(lang.system.ready);
 });
 
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
     // Only make response in specific channels on debug mode
-    if (process.env.DEBUG && !message.channel.name.toLowerCase().includes('bot'))
+    if (process.env.DEBUG && (!message.channel.name || !message.channel.name.toLowerCase().includes('bot')))
         return;
 
     // Ignore message sent by bot.
@@ -84,8 +96,15 @@ client.on('message', async (message) => {
         let newMsg = FixTwitter.fix(message);
         newMsg = URLFilter.filter(newMsg);
         if (message.content !== newMsg) {
-            message.channel.send(util.format(lang.response.filteredMessage, message.author.id, newMsg));
-            deleteMessage(message)
+            const output = util.format(lang.response.filteredMessage, message.author.id, newMsg);
+            if (message.reference) {
+                const mid = message.reference.messageId;
+                const messageToReply = await message.channel.messages.fetch(mid);
+                messageToReply.reply({ content: output, allowedMentions: { repliedUser: false } });
+            } else {
+                message.channel.send(output);
+            }
+            await deleteMessage(message);
             return;
         }
         // Continue if no url is modified.
@@ -126,7 +145,7 @@ client.on('messageUpdate', async (oldMsg, newMsg) => {
             newMsg.edit(content);
         else {
             newMsg.channel.send(util.format(lang.response.filteredMessage, newMsg.author.id, content));
-            deleteMessage(newMsg);
+            await deleteMessage(newMsg);
             return;
         }
     }
