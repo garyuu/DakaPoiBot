@@ -5,6 +5,8 @@ const discord = require('discord.js');
 const intentsConfig = require('./lib/intents.js');
 const { configure, getLogger } = require('log4js');
 
+const DEBUG = Number(process.env.DEBUG);
+const RECEIVED_MESSAGE_TYPE = ["DEFAULT", "REPLY"];
 const client = new discord.Client({
     intents: intentsConfig
 });
@@ -29,8 +31,7 @@ const EmojiTrigger = require('./lib/emoji_trigger')(app);
 
 app.emojiTrigger = EmojiTrigger;
 
-
-if (process.env.DEBUG) {
+if (DEBUG) {
     const send = discord.TextChannel.prototype.send;
     discord.TextChannel.prototype.send = function (options) {
         if (typeof options === 'string') {
@@ -48,13 +49,11 @@ if (process.env.DEBUG) {
  * @returns 
  */
 async function deleteMessage(message) {
-    if (message.deletable) {
-        await message.member.fetch();
-        if (message.member.roles.cache.find(role => role.name.toLowerCase().trim() === 'cybersecurity'))
-            return;
-        message.delete()
-            .catch(e => { logger.warn("[SAFE]\n" + e); });
-    }
+    await message.member.fetch();
+    if (message.member.roles.cache.find(role => role.name.toLowerCase().trim() === 'cybersecurity'))
+        return;
+    message.delete()
+        .catch(e => { logger.warn(e); });
 }
 
 client.once('ready', () => {
@@ -69,55 +68,67 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('messageCreate', async (message) => {
-    // Only make response in specific channels on debug mode
-    if (process.env.DEBUG && (!message.channel.name || !message.channel.name.toLowerCase().includes('bot')))
-        return;
+    try {
+        // Only make response in specific channels on debug mode
+        if (DEBUG && (!message.channel.name || !message.channel.name.toLowerCase().includes('bot')))
+            return;
 
-    // Ignore message sent by bot.
-    if (message.author.bot)
-        return;
-    
-    // Mentioned message.
-    if (message.mentions.users.has(client.user.id)) {
-        message.channel.send(lang.response.mention);
-        return;
-    }
+        // Ignore message sent by bot.
+        if (message.author.bot)
+            return;
 
-    // Main commands.
-    if (message.content.startsWith(prefix)) {
-        const args = message.content.slice(prefix.length).trim().replace(/\s+/g, ' ').split(' ');
-        const command = args.shift();
-        Command.execute(message, command, args)
-            .catch(e => {
-                logger.error(`[MAIN] ${e}`);
-                message.channel.send(lang.response.unexperror);
-            });
-        return;
-    }
-
-    // Url filter.
-    const hasURL = urlRegex().test(message.content);
-    if (hasURL) {
-        // Fix twitter video
-        let newMsg = FixTwitter.fix(message);
-        newMsg = URLFilter.filter(newMsg);
-        if (message.content !== newMsg) {
-            const output = util.format(lang.response.filteredMessage, message.author.id, newMsg);
-            if (message.reference) {
-                const mid = message.reference.messageId;
-                const messageToReply = await message.channel.messages.fetch(mid);
-                messageToReply.reply({ content: output, allowedMentions: { repliedUser: false } });
-            } else {
-                message.channel.send(output);
-            }
-            await deleteMessage(message);
+        // Only react when received DEFAULT and REPLY message type
+        if (!RECEIVED_MESSAGE_TYPE.includes(message.type))
+            return;
+        
+        // Don't automatically join unjoined thread
+        if (message.channel.isThread() && !message.channel.joined)
+            return;
+        
+        // Mentioned message.
+        if (message.mentions.users.has(client.user.id)) {
+            message.channel.send(lang.response.mention);
             return;
         }
-        // Continue if no url is modified.
-    }
 
-    // Special Key Word
-    KeywordsTrigger.trigger(message, hasURL);
+        // Main commands.
+        if (message.content.startsWith(prefix)) {
+            const args = message.content.slice(prefix.length).trim().replace(/\s+/g, ' ').split(' ');
+            const command = args.shift();
+            Command.execute(message, command, args)
+                .catch(e => {
+                    logger.error(`[MAIN] ${e}`);
+                    message.channel.send(lang.response.unexperror);
+                });
+            return;
+        }
+
+        // Url filter.
+        const hasURL = urlRegex().test(message.content);
+        if (hasURL) {
+            // Fix twitter video
+            let newMsg = FixTwitter.fix(message);
+            newMsg = URLFilter.filter(newMsg);
+            if (message.content !== newMsg) {
+                const output = util.format(lang.response.filteredMessage, message.author.id, newMsg);
+                if (message.reference) {
+                    const mid = message.reference.messageId;
+                    const messageToReply = await message.channel.messages.fetch(mid);
+                    messageToReply.reply({ content: output, allowedMentions: { repliedUser: false } });
+                } else {
+                    message.channel.send(output);
+                }
+                await deleteMessage(message);
+                return;
+            }
+            // Continue if no url is modified.
+        }
+
+        // Special Key Word
+        KeywordsTrigger.trigger(message, hasURL);
+    } catch (e) {
+        console.warn(e);
+    }
 });
 
 async function onReactionChange(react, user, isAdd) {
