@@ -57,6 +57,12 @@
             "wrongFormat": "想玩什麼poi?"
         },
 
+        "move": {
+            "wrongFormat": "想移哪一條訊息去哪裡poi?",
+            "missingMessage": "想移哪一條訊息poi?",
+            "cannotSend": "我不能在這裡發送訊息poi..."
+        },
+
         "unexperror": "不知道發生什麼事了poi...:persevere:",
         "dberror": "和資料庫的連線失敗了 poi...",
         "mention": "找我有什麼事嗎poi?",
