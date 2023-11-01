@@ -107,8 +107,7 @@ client.on('messageCreate', async (message) => {
         const hasURL = urlRegex().test(message.content);
         if (hasURL) {
             // Fix twitter video
-            let newMsg = FixTwitter.fix(message);
-            newMsg = URLFilter.filter(newMsg);
+            let newMsg = URLFilter.filter(message.content);
             if (message.content !== newMsg) {
                 const output = util.format(lang.response.filteredMessage, message.author.id, newMsg);
                 if (message.reference) {
