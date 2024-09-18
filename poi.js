@@ -11,7 +11,22 @@ const client = new discord.Client({
     intents: intentsConfig
 });
 configure(require('./log4js.json'));
-const logger = getLogger();
+const logger = {
+    log: getLogger(),
+    info: (msg) => {
+        sendLogMessage(0, msg);
+        logger.log.info(msg);
+    },
+    warn: (msg) => {
+        sendLogMessage(1, msg);
+        logger.this.log.warn(msg);
+    },
+    error: (msg) => {
+        sendLogMessage(2, msg);
+        logger.log.error(msg);
+    },
+}
+
 const prefix = process.env.BOT_PREFIX;
 const lang = require('./' + process.env.BOT_LANG + '.json');
 const db = new (require('./lib/db_access.js'))(process.env.DATABASE_URL);
@@ -28,6 +43,8 @@ const FixTwitter = require('./lib/fix_twitter')(app);
 const URLFilter = require('./lib/url_filter')(app);
 const KeywordsTrigger = require('./lib/keywords')(app);
 const EmojiTrigger = require('./lib/emoji_trigger')(app);
+
+let logChannel = null;
 
 app.emojiTrigger = EmojiTrigger;
 
@@ -56,9 +73,30 @@ async function deleteMessage(message) {
         .catch(e => { logger.warn(e); });
 }
 
+async function sendLogMessage(level, message) {
+    if (logChannel != null) {
+        switch (level) {
+            case 0:
+                message = "💬" + message;
+                break;
+            case 1:
+                message = "⚠" + message;
+                break;
+            case 2:
+                message = "<@" + process.env.MANAGER_USER_ID + ">\n⛔" + message;
+                break;
+        }
+        logChannel.send(message);
+    }
+}
+
 client.once('ready', () => {
     client.user.setActivity("Poi, help");
-    logger.info(lang.system.ready);
+    client.channels.fetch(process.env.BOT_LOG_CHANNEL_ID)
+        .then(channel => {
+            logChannel = channel;
+            logger.info(lang.system.ready);
+        });
 });
 
 client.on('guildCreate', (guild) => {
@@ -80,11 +118,11 @@ client.on('messageCreate', async (message) => {
         // Only react when received DEFAULT and REPLY message type
         if (!RECEIVED_MESSAGE_TYPE.includes(message.type))
             return;
-        
+
         // Don't automatically join unjoined thread
         if (message.channel.isThread() && !message.channel.joined)
             return;
-        
+
         // Mentioned message.
         if (message.mentions.users.has(client.user.id)) {
             message.channel.send(lang.response.mention);
@@ -106,16 +144,22 @@ client.on('messageCreate', async (message) => {
         // Url filter.
         const hasURL = urlRegex().test(message.content);
         if (hasURL) {
-            // Fix twitter video
+            // Fix twitter embeded
             let newMsg = URLFilter.filter(message.content);
-            if (message.content !== newMsg) {
+            if (newMsg != null && message.content !== newMsg) {
                 const output = util.format(lang.response.filteredMessage, message.author.id, newMsg);
+                let promise = null;
                 if (message.reference) {
                     const mid = message.reference.messageId;
                     const messageToReply = await message.channel.messages.fetch(mid);
-                    messageToReply.reply({ content: output, allowedMentions: { repliedUser: false } });
+                    promise = messageToReply.reply({ content: output, allowedMentions: { repliedUser: false } })
                 } else {
-                    message.channel.send(output);
+                    promise = message.channel.send(output);
+                }
+                if (promise != null) {
+                    promise.then(filterredMessage => {
+                        logger.info(`[Filter] ${filterredMessage.url}\n${message.content}\n=>\n${newMsg}`);
+                    });
                 }
                 await deleteMessage(message);
                 return;
@@ -126,7 +170,7 @@ client.on('messageCreate', async (message) => {
         // Special Key Word
         KeywordsTrigger.trigger(message, hasURL);
     } catch (e) {
-        console.warn(e);
+        logger.error(e);
     }
 });
 
@@ -135,7 +179,7 @@ async function onReactionChange(react, user, isAdd) {
         try {
             await react.fetch();
         } catch (e) {
-            logger.console.warn(`Fetching message failed. ${e}`);
+            logger.warn(`Fetching message failed. ${e}`);
             return;
         }
     }
