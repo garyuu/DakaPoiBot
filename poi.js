@@ -13,17 +13,17 @@ const client = new discord.Client({
 configure(require('./log4js.json'));
 const logger = {
     log: getLogger(),
-    info: (msg) => {
+    info: function (msg) {
         sendLogMessage(0, msg);
-        logger.log.info(msg);
+        this.log.info(msg);
     },
-    warn: (msg) => {
+    warn: function (msg) {
         sendLogMessage(1, msg);
-        logger.this.log.warn(msg);
+        this.log.warn(msg);
     },
-    error: (msg) => {
+    error: function (msg) {
         sendLogMessage(2, msg);
-        logger.log.error(msg);
+        this.log.error(msg);
     },
 }
 
@@ -134,8 +134,8 @@ client.on('messageCreate', async (message) => {
             const args = message.content.slice(prefix.length).trim().replace(/\s+/g, ' ').split(' ');
             const command = args.shift();
             Command.execute(message, command, args)
-                .catch(e => {
-                    logger.error(`[MAIN] ${e}`);
+                .catch(eObj => {
+                    logger.error(`[MAIN] ${eObj.data}`);
                     message.channel.send(lang.response.unexperror);
                 });
             return;

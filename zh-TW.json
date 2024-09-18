@@ -5,24 +5,19 @@
     "response": {
         "hello": "%s 你好! Poi!",
         "helloonichan": "是 %s 歐尼醬poi!!",
-
         "successfulJoin": "%s 成功加入了 %s poi!",
         "successfulLeave": "%s 離開了 %s poi。",
-
         "yuck": "噁心poi :oncoming_police_car:",
         "mayingjo": "還我:cow:poi!!",
         "nyan": "喵",
-
         "loveonichan": "最愛歐尼醬了:heart:poi!!",
         "nooneloveyou": "可惜沒有人愛你:broken_heart:poi...",
-
         "noplaylist": "我不記得你有告訴過我poi...在後面加個清單網址我就會記得了poi!!",
         "getPlaylist": "我記得你的清單是這個poi!!\n`%s`",
         "setPlaylist": "我會努力記住這個清單的poi!",
         "urlerror": "這好像不是一個網址poi?",
         "filteredMessage": "<@!%s>\n%s",
         "rawText": "原始訊息：`%s`",
-    
         "fanfare": {
             "musicNotFound": "Poi沒有找到你的入場音樂poi...",
             "getFanfare": "你現在的入場音樂是這個poi!!\n%s",
@@ -31,7 +26,6 @@
             "switchOff": "幫你關掉入場音樂了poi!!",
             "commandError": "Poi看不懂這個指令耶poi..."
         },
-
         "guess": {
             "start": "猜數字遊戲開始了poi! 猜的:four:個數字不可以重複喔!",
             "errorStart": "我現在沒辦法玩遊戲poi...",
@@ -41,28 +35,26 @@
             "incorrectFormat": "要猜:four:個不同的數字啦poi!!",
             "stop": "不跟我玩了嗎poi..."
         },
-
         "dice": {
             "result": "`%s`\n= **%d** Poi!!",
             "wrongFormat": "這樣寫我看不懂poi...",
             "cancel": "不跟我玩了嗎poi..."
         },
-
         "time": {
             "timezone": "請先告訴我想看哪個時區poi!",
             "format": "時間這樣寫poi看不懂...這樣寫的話就very poi!\n```%s time TW 11:20\n%s time 日本 06-08 12:00\n%s time WeStUs 2000-11-25 20:04:32```"
         },
-
         "game": {
             "wrongFormat": "想玩什麼poi?"
         },
-
         "move": {
             "wrongFormat": "想移哪一條訊息去哪裡poi?",
             "missingMessage": "想移哪一條訊息poi?",
             "cannotSend": "我不能在這裡發送訊息poi..."
         },
-
+        "twitter": {
+            "toggle": "已經切換twitter修正名稱為`%s`"
+        },
         "unexperror": "不知道發生什麼事了poi...:persevere:",
         "dberror": "和資料庫的連線失敗了 poi...",
         "mention": "找我有什麼事嗎poi?",
@@ -105,6 +97,8 @@
         "       目前的遊戲有： Jianken",
         "       像這樣：game create jianken",
         "       Poi等你來一起玩喔",
+        "twitter: tw, x",
+        "    -- 切換用於置換twitter(x)的domain名字",
         "```",
         ":small_blue_diamond:當有人提到以下關鍵字的時候Poi就會冒出來！",
         "```",
