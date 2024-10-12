@@ -8,7 +8,8 @@ const { configure, getLogger } = require('log4js');
 const DEBUG = Number(process.env.DEBUG);
 const RECEIVED_MESSAGE_TYPE = ["DEFAULT", "REPLY"];
 const client = new discord.Client({
-    intents: intentsConfig
+    intents: intentsConfig,
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 configure(require('./log4js.json'));
 const logger = {
@@ -39,14 +40,15 @@ const app = {
     db: db,
 };
 const Command = require('./lib/command')(app);
-const FixTwitter = require('./lib/fix_twitter')(app);
-const URLFilter = require('./lib/url_filter')(app);
+// const FixTwitter = require('./lib/fix_twitter')(app);
 const KeywordsTrigger = require('./lib/keywords')(app);
 const EmojiTrigger = require('./lib/emoji_trigger')(app);
+app.emojiTrigger = EmojiTrigger;
+
+const URLFilter = require('./lib/url_filter')(app);
 
 let logChannel = null;
 
-app.emojiTrigger = EmojiTrigger;
 
 if (DEBUG) {
     const send = discord.TextChannel.prototype.send;
@@ -196,19 +198,19 @@ client.on('messageReactionRemove', async (react, user) => {
     onReactionChange(react, user, false);
 });
 
-client.on('messageUpdate', async (oldMsg, newMsg) => {
-    if (newMsg.author.bot && !newMsg.author.equals(client.user))
-        return;
-    const content = FixTwitter.fix(newMsg);
-    if (newMsg.content !== content) {
-        if (newMsg.author.equals(client.user))
-            newMsg.edit(content);
-        else {
-            newMsg.channel.send(util.format(lang.response.filteredMessage, newMsg.author.id, content));
-            await deleteMessage(newMsg);
-            return;
-        }
-    }
-});
+// client.on('messageUpdate', async (oldMsg, newMsg) => {
+//     if (newMsg.author.bot && !newMsg.author.equals(client.user))
+//         return;
+//     const content = FixTwitter.fix(newMsg);
+//     if (newMsg.content !== content) {
+//         if (newMsg.author.equals(client.user))
+//             newMsg.edit(content);
+//         else {
+//             newMsg.channel.send(util.format(lang.response.filteredMessage, newMsg.author.id, content));
+//             await deleteMessage(newMsg);
+//             return;
+//         }
+//     }
+// });
 
 client.login(process.env.BOT_TOKEN);
